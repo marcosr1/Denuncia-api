@@ -73,10 +73,13 @@ envia:
 
 ## 📄 Listar denúncias
 ```bash
-GET /denuncias
+GET /
 ```
 
 ## 👍 Votar em denúncia
 ```bash
 POST /votar/:id
 ```
+
+AUTOR:
+Marcos Richelly

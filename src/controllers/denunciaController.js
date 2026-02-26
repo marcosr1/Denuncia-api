@@ -1,10 +1,14 @@
 import { Denuncia } from "../models/Index.js";
+import { poligono } from "../data/cep63488000.js";
+import { pontoDentroDoPoligono } from "../utils/validarCEP.js";
 
 export const criarDenuncia = async ( req, res ) => {
     try {
         const { tipo, descricao, latitude, longitude, imagem } = req.body;
 
-        console.log(req.body); 
+        const permitido = pontoDentroDoPoligono({ latitude, longitude, poligono });
+
+        if (!permitido) return res.status(400).json({ error: "Localização fora da área permitida" });
 
         const novaDenuncia = await Denuncia.create({ tipo, descricao, latitude, longitude, imagem });
         res.status(201).json(novaDenuncia);
