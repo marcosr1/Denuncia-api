@@ -4,10 +4,7 @@ export const criarDenuncia = async ( req, res ) => {
     try {
         const { tipo, descricao, latitude, longitude, imagem } = req.body;
 
-        console.log(req.body);
-
-        if ( !tipo || !descricao || !latitude || !longitude ) return res.status(400).json({ error: "Tipo, descrição e localização são obrigatórios" });
-
+        console.log(req.body); 
 
         const novaDenuncia = await Denuncia.create({ tipo, descricao, latitude, longitude, imagem });
         res.status(201).json(novaDenuncia);
@@ -23,5 +20,33 @@ export const listarDenuncias = async ( req, res ) => {
         res.status(200).json(denuncias);
     } catch ( error ) {
         return res.status(500).json({ error: "Erro ao listar denúncias" });
+    }
+};
+
+export const updateDenuncia = async ( req, res ) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!status) return res.status(400).json({ error: "Status é obrigatório" });
+
+        const denuncia = await Denuncia.update({ status }, {where: {id} } );
+        return res.status(200).json({ message: "Denúncia atualizada com sucesso" });
+    } catch ( error ) {
+        return res.status(500).json({ error: "Erro ao atualizar denúncia" });
+    }
+};
+
+export const votarDenuncia = async ( req, res ) => {
+    try {
+        const { id } = req.params;
+        if (!id) return res.status(400).json({ error: "ID é obrigatório" });
+        
+        const denuncia = await Denuncia.findByPk(id);
+  
+        await denuncia.increment("votos");
+        return res.status(200).json({ message: "Voto registrado com sucesso" });
+    } catch ( error ) {
+        return res.status(500).json({ error: "Erro ao votar na denúncia" });
     }
 };
