@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa de Denúncias (Gratuito)</title>
+
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+
+    .panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.3);
+      z-index: 1000;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="panel">
+  <strong>Denúncias</strong><br>
+  <span id="coords">Clique no mapa</span>
+  <button onclick="enviarDenuncia()">Enviar denúncia</button>
+  <button onclick="carregarDenuncias()">Atualizar</button>
+</div>
+
+<div id="map"></div>
+
+<script>
+  // Inicializa o mapa
+  const map = L.map('map').setView([ -5.415143, -42.642435], 16);
+
+  // Camada gratuita do OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  let latitude = null;
+  let longitude = null;
+  let markersLayer = L.layerGroup().addTo(map);
+
+  // Clique no mapa (POST)
+  map.on('click', (e) => {
+    latitude = e.latlng.lat;
+    longitude = e.latlng.lng;
+
+    document.getElementById('coords').innerText =
+      `Lat: ${latitude.toFixed(6)} | Lng: ${longitude.toFixed(6)}`;
+
+    L.marker([latitude, longitude], { draggable: true })
+      .addTo(map);
+  });
+
+  function enviarDenuncia() {
+    if (!latitude || !longitude) {
+      alert('Clique no mapa para selecionar o local');
+      return;
+    }
+
+    fetch('http://localhost:3000/denunciar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude, longitude })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro no POST');
+      return res.json();
+    })
+    .then(() => {
+      alert('Denúncia enviada!');
+      carregarDenuncias();
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Erro ao enviar denúncia');
+    });
+  }
+
+  // GET
+  function carregarDenuncias() {
+    markersLayer.clearLayers();
+
+    fetch('http://localhost:3000/')
+      .then(res => {
+        if (!res.ok) throw new Error('Erro no GET');
+        return res.json();
+      })
+      .then(data => {
+        data.forEach(item => {
+          if (item.latitude && item.longitude) {
+            L.marker([item.latitude, item.longitude])
+              .bindPopup(`
+                <strong>Denúncia</strong><br>
+                Lat: ${item.latitude}<br>
+                Lng: ${item.longitude}
+              `)
+              .addTo(markersLayer);
+          }
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Erro ao carregar denúncias');
+      });
+  }
+
+  // Carrega automaticamente
+  carregarDenuncias();
+</script>
+
+</body>
+</html>
