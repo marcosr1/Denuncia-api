@@ -1,12 +1,15 @@
 import * as turf from '@turf/turf';
 
 export function pontoDentroDoPoligono(latitude, longitude, poligono) {
-    if (latitude === null || longitude === null ) {
-        return false;
-    }
+  const lat = Number(latitude);
+  const lng = Number(longitude);
 
-    const ponto = turf.point([longitude, latitude]);
-    const area = turf.polygon(poligono.coordinates);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return false;
+  }
 
-    return turf.booleanPointInPolygon(ponto, area);
-};
+  const ponto = turf.point([lng, lat]);
+  const area = turf.polygon(poligono.coordinates);
+
+  return turf.booleanPointInPolygon(ponto, area);
+}

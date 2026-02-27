@@ -4,13 +4,30 @@ import { pontoDentroDoPoligono } from "../utils/validarCEP.js";
 
 export const criarDenuncia = async ( req, res ) => {
     try {
-        const { tipo, descricao, latitude, longitude, imagem } = req.body;
+        const { tipo, descricao, latitude, longitude, imagem, status } = req.body;
 
-        const permitido = pontoDentroDoPoligono({ latitude, longitude, poligono });
+        const lat = Number(latitude);
+        const lng = Number(longitude);
 
-        if (!permitido) return res.status(400).json({ error: "Localização fora da área permitida" });
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+            return res.status(400).json({
+                error: 'Latitude ou longitude inválidas'
+            });
+        }
 
-        const novaDenuncia = await Denuncia.create({ tipo, descricao, latitude, longitude, imagem });
+        const permitido = pontoDentroDoPoligono(
+            lat,
+            lng,
+            poligono
+        );
+
+        if (!permitido) {
+            return res.status(403).json({
+                error: 'Denúncia permitida apenas para o CEP 64388000'
+            });
+        }
+
+        const novaDenuncia = await Denuncia.create({ tipo, descricao, latitude: lat, longitude: lng, imagem, status });
         res.status(201).json(novaDenuncia);
     } catch ( error ) {
         console.log(error);
@@ -21,13 +38,22 @@ export const criarDenuncia = async ( req, res ) => {
 export const listarDenuncias = async ( req, res ) => {
     try {
         const denuncias = await Denuncia.findAll();
-        res.status(200).json(denuncias);
+        const resultado = denuncias.map(d => ({
+            tipo: d.tipo,
+            descricao: d.descricao,
+            latitude: Number(d.latitude.toFixed(6)),
+            longitude: Number(d.longitude.toFixed(6)),
+            imagem: d.imagem,
+            votos: d.votos,
+            status: d.status,
+        }));
+        return res.status(200).json(resultado);
     } catch ( error ) {
         return res.status(500).json({ error: "Erro ao listar denúncias" });
     }
 };
 
-export const updateDenuncia = async ( req, res ) => {
+export const updateStatus = async ( req, res ) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
@@ -38,6 +64,29 @@ export const updateDenuncia = async ( req, res ) => {
         return res.status(200).json({ message: "Denúncia atualizada com sucesso" });
     } catch ( error ) {
         return res.status(500).json({ error: "Erro ao atualizar denúncia" });
+    }
+};
+
+export const deletarDenuncia = async ( req, res ) => {
+    try {
+        const { id } = req.params;
+        const denuncia = await Denuncia.destroy({ where: { id } });
+        if (!denuncia) return res.status(404).json({ error: "Denúncia não encontrada" } );
+        return res.status(200).json({ message: "Denúncia deletada com sucesso" });
+    } catch ( error ) {
+        return res.status(500).json({ error: "Erro ao deletar denúncia" });
+    }
+};
+
+export const updateImagem = async ( req, res ) => {
+    try {
+        const { id } = req.params;
+        const { imagem } = req.body;
+        if (!imagem) return res.status(400).json({ error: "Imagem é obrigatória" });
+        const denuncia = await Denuncia.update({ imagem }, { where: { id } });
+        return res.status(200).json({ message: "Imagem atualizada com sucesso" });
+    } catch ( error ) {
+        return res.status(500).json({ error: "Erro ao atualizar imagem" });
     }
 };
 
