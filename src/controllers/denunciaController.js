@@ -4,33 +4,16 @@ import { pontoDentroDoPoligono } from "../utils/validarCEP.js";
 
 export const criarDenuncia = async ( req, res ) => {
     try {
-        const { tipo, descricao, latitude, longitude, imagem, status } = req.body;
-
+        const { tipo, descricao, latitude, longitude, imagem, status } = req.body; 
         const lat = Number(latitude);
         const lng = Number(longitude);
-
-        if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-            return res.status(400).json({
-                error: 'Latitude ou longitude inválidas'
-            });
-        }
-
-        const permitido = pontoDentroDoPoligono(
-            lat,
-            lng,
-            poligono
-        );
-
-        if (!permitido) {
-            return res.status(403).json({
-                error: 'Denúncia permitida apenas para o CEP 64388000'
-            });
-        }
-
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return res.status(400).json({error: 'Latitude ou longitude inválidas'});
+        const permitido = pontoDentroDoPoligono(lat,lng,poligono);
+        if (!permitido) return res.status(403).json({error: 'Denúncia permitida apenas para o CEP 64388000'});
         const novaDenuncia = await Denuncia.create({ tipo, descricao, latitude: lat, longitude: lng, imagem, status });
+
         res.status(201).json(novaDenuncia);
-    } catch ( error ) {
-        console.log(error);
+    } catch ( error ) { 
         return res.status(500).json({ error: "Erro ao criar denúncia" });
     }
 };
@@ -56,10 +39,8 @@ export const listarDenuncias = async ( req, res ) => {
 export const updateStatus = async ( req, res ) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;
-
-        if (!status) return res.status(400).json({ error: "Status é obrigatório" });
-
+        const { status } = req.body; 
+        if (!status) return res.status(400).json({ error: "Status é obrigatório" });    
         const denuncia = await Denuncia.update({ status }, {where: {id} } );
         return res.status(200).json({ message: "Denúncia atualizada com sucesso" });
     } catch ( error ) {

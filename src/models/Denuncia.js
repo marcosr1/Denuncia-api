@@ -28,7 +28,7 @@ export const Denuncia = sequelize.define("denuncia", {
         allowNull: true
     },
     status: {
-        type: DataTypes.ENUM('novo', 'iniciado', 'terminado', 'acabado'),
+        type: DataTypes.ENUM('novo', 'iniciado', 'em andamento', 'finalizado'),
         allowNull: false,
         defaultValue: "novo"
     },

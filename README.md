@@ -67,6 +67,7 @@ longetude:
 
 # 🔗 Endpoints principais
 ## ➕ Criar denúncia
+- tem limitador de denunciar ant flood
 ```bash
 POST /denunciar
 ```
@@ -79,15 +80,39 @@ envia:
   "longetude": "loc"
 }
 ```
-
+---
 ## 📄 Listar denúncias
+- lista todas denuncias(séra apenas para os admins)
 ```bash
 GET /
 ```
+---
 
 ## 👍 Votar em denúncia
+- limite de 10 votos em cada denúncia criada
 ```bash
 POST /votar/:id
+```
+---
+
+## Mudar status da denúncia
+- Muda o status da denuncia de novo, iniciado, em andamento, finalizado.
+```bash
+PATCH /status/:id
+```
+---
+
+## Inserir imagens
+- Inserir imagens do local
+```bash
+PATCH /imagem/:id
+```
+---
+
+## Deletar denúncia
+- Apagar denúncias finalizadas
+```bash
+DELETE /:id
 ```
 
 AUTOR:
