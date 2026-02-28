@@ -4,6 +4,12 @@ API backend para registro de denúncias urbanas anônimas
 
 Projeto pensado para **cidades pequenas**, **ONGs** e **iniciativas sociais**.
 
+Oi, eu sou o Marcos, quero fazer esse projeto para ajudar a minha cidade a se desenvolver e se tornar um lugar melhor, com o objetivo de reportar problemas na infraestrutura da cidade, onde os próprios cidadões reportem esses problemas proximos de sua casa.
+
+Haverá atualizações e um Frontend ainda em desenvolvimento!!!
+
+Obrigado pela sua atenção e aguarde!
+
 ---
 
 ## 🚀 Funcionalidades
