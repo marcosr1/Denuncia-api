@@ -11,7 +11,7 @@ Projeto pensado para **cidades pequenas**, **ONGs** e **iniciativas sociais**.
 - 🗺️ Localização via coordenadas (DMS → decimal)
 - 🧾 Tipos de denúncia (lixo, barulho, iluminação, etc.)
 - 👍 Sistema de votos que aumenta a prioridade da denuncia
-- 🕒 Status de acompanhamento tempo que a denuncia foi 
+- 🕒 Status de acompanhamento tempo que a denuncia foi deferida
 - 🛡️ Rate limit + anti-spam
 - 🔐 Endpoint exclusivo para moderação
 
@@ -23,25 +23,34 @@ Projeto pensado para **cidades pequenas**, **ONGs** e **iniciativas sociais**.
 - PostgreSQL
 - Sequelize 
 - ES Modules
+- Turf
+- Cors
+- Dotenv
+- Express-rate-limit
+- Mongoose
 
 ---
 
 ## 📂 Estrutura do projeto
 ```bash
 src/
+├── config/
+│ └── database.js
 ├── controllers/
 │ └── denunciaController.js
 ├── models/
 │ └── Denuncia.js
+│ └── Index.js
+├── data/
+│ └── cep63488000.js
 ├── routes/
 │ └── denunciaRoutes.js
 ├── utils/
-│ └── parseDMS.js
+│ └── dmsToDecimal.js
+│ └── validarCEP.js
 ├── middlewares/
-│ ├── rateLimit.js
-│ └── authModerador.js
-├── database/
-│ └── index.js
+│ ├── rateLimit.js 
+├── server.js
 └── app.js
 ```
 
@@ -59,7 +68,7 @@ longetude:
 # 🔗 Endpoints principais
 ## ➕ Criar denúncia
 ```bash
-POST /denunciar`
+POST /denunciar
 ```
 envia:
 ```json
