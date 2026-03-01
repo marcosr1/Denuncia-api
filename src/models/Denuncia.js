@@ -8,7 +8,7 @@ export const Denuncia = sequelize.define("denuncia", {
         primaryKey: true
     },
     tipo: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM("infraestrutura", "iluminacao", "lixo", "alagamento", "transito", "seguranca", "outros"),
         allowNull: false
     },
     descricao: {
