@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import denunciaRoutes from "./src/routes/denunciaRoutes.js";
+import denunciaRoutes from "./routes/denunciaRoutes.js";
 
 const app = express();
 
