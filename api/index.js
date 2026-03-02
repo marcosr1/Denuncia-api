@@ -1,20 +1,15 @@
-import { fastify } from "fastify";
-import cors from "@fastify/cors";
+import app from "../src/app.js";
+import sequelize from "../src/config/database.js";
 
-const app = fastify();
+export default async function handler(req, res) {
+  try {
+    // conecta ao banco só quando a função é chamada
+    await sequelize.authenticate();
 
-app.register(cors, {
-  origin: "*",
-});
-
-app.get("/", () => {
-  return "hello world";
-});
-
-app
-  .listen({
-    port: 3333,
-  })
-  .then(() => {
-    console.log("HTTP server running!");
-  });
+    // passa a requisição para o Express
+    return app(req, res);
+  } catch (error) {
+    console.error("ERRO NA FUNÇÃO:", error);
+    return res.status(500).json({ ok: false, error: error.message });
+  }
+}
