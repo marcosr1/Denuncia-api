@@ -3,6 +3,11 @@ import { criarDenuncia, listarDenuncias, updateStatus, votarDenuncia, updateImag
 import { limiter, voteLimiter } from "../middlewares/rateLimit.js";
 
 const router = Router();
+router.get("/api", (req, res) => {
+  res.json({ message: "API funcionando!" });
+});
+
+router.get("/", listarDenuncias);
 
 router.post("/denunciar", limiter, criarDenuncia);
 router.patch("/votar/:id", voteLimiter, votarDenuncia);
@@ -10,7 +15,5 @@ router.patch("/status/:id", updateStatus);
 router.patch("/imagem/:id", updateImagem);
 
 router.delete("/:id", deletarDenuncia);
-
-router.get("/", listarDenuncias);
 
 export default router;
