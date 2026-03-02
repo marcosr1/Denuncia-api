@@ -22,6 +22,7 @@ export const listarDenuncias = async ( req, res ) => {
     try {
         const denuncias = await Denuncia.findAll();
         const resultado = denuncias.map(d => ({
+            id: d.id,
             tipo: d.tipo,
             descricao: d.descricao,
             latitude: Number(d.latitude.toFixed(6)),
