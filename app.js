@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import denunciaRoutes from "./routes/denunciaRoutes.js";
-import sequelize from "./config/database.js"
+import denunciaRoutes from "./src/routes/denunciaRoutes.js";
+import sequelize from "./src/config/database.js"
 
 const app = express();
 

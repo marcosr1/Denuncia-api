@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "scripts": { 
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@turf/turf": "^7.3.4",
     "cors": "^2.8.6",
+    "docker": "^1.0.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
