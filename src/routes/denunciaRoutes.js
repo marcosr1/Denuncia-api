@@ -9,11 +9,11 @@ router.get("/api", (req, res) => {
 
 router.get("/", listarDenuncias);
 
-router.post("/denunciar", limiter, criarDenuncia);
+router.post("/denunciar", criarDenuncia);
 router.patch("/votar/:id", voteLimiter, votarDenuncia);
 router.patch("/status/:id", updateStatus);
 router.patch("/imagem/:id", updateImagem);
 
-router.delete("/:id", deletarDenuncia);
+router.delete("/:id", deletarDenuncia); 
 
 export default router;
