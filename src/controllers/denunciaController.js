@@ -11,7 +11,23 @@ export const criarDenuncia = async ( req, res ) => {
         if (!Number.isFinite(lat) || !Number.isFinite(lng)) return res.status(400).json({error: 'Latitude ou longitude inválidas'});
         const permitido = pontoDentroDoPoligono(lat,lng,poligono);
         if (!permitido) return res.status(403).json({error: 'Denúncia permitida apenas para o CEP 64388000'});
-        const novaDenuncia = await Denuncia.create({ tipo, descricao, latitude: lat, longitude: lng, imagem, status });
+        const novaDenuncia = await Denuncia.create({ 
+            tipo,
+            descricao, 
+            latitude: lat, 
+            longitude: lng, 
+            imagem, status 
+        });
+
+        io.emit("novaDenuncia", {
+            id: novaDenuncia.id,
+            tipo: novaDenuncia.tipo,
+            descricao: novaDenuncia.descricao,
+            latitude: novaDenuncia.latitude,
+            longetude: novaDenuncia.longetude,
+            votos: novaDenuncia.votos,
+            status: novaDenuncia.status
+        });
 
         res.status(201).json(novaDenuncia);
     } catch ( error ) { 
