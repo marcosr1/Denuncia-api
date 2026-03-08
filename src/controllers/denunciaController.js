@@ -24,7 +24,7 @@ export const criarDenuncia = async ( req, res ) => {
             tipo: novaDenuncia.tipo,
             descricao: novaDenuncia.descricao,
             latitude: novaDenuncia.latitude,
-            longetude: novaDenuncia.longetude,
+            longitude: novaDenuncia.longitude,
             votos: novaDenuncia.votos,
             status: novaDenuncia.status
         });
