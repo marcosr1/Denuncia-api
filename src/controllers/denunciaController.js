@@ -1,6 +1,7 @@
 import { Denuncia } from "../models/Index.js";
 import { poligono } from "../data/cep63488000.js";
 import { pontoDentroDoPoligono } from "../utils/validarCEP.js";
+import { io } from "../../server.js";
 
 export const criarDenuncia = async ( req, res ) => {
     try {
@@ -80,7 +81,13 @@ export const votarDenuncia = async ( req, res ) => {
         const denuncia = await Denuncia.findByPk(id);
   
         await denuncia.increment("votos");
-        return res.status(200).json({ message: "Voto registrado com sucesso" });
+        await denuncia.reload();
+
+        io.emit("denunciaAtualizada", {
+            id: denuncia.id,
+            votos: denuncia.votos
+        });
+        return res.status(200).json({ message: "Voto registrado com sucesso", votos: denuncia.votos });
     } catch ( error ) {
         return res.status(500).json({ error: "Erro ao votar na denúncia" });
     }
